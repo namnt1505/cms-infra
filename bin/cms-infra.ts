@@ -1,10 +1,14 @@
 #!/usr/bin/env node
 import 'source-map-support/register';
 import * as cdk from 'aws-cdk-lib';
-import { CmsInfraStack } from '../lib/cms-infra-stack';
+import { CmsInfraStack } from '../lib/cms-infra.stack';
+import { DefaultStackSynthesizer } from 'aws-cdk-lib';
 
 const app = new cdk.App();
 new CmsInfraStack(app, 'CmsInfraStack', {
+  synthesizer: new DefaultStackSynthesizer({
+    qualifier: 'cmsapp',
+  }),
   /* If you don't specify 'env', this stack will be environment-agnostic.
    * Account/Region-dependent features and context lookups will not work,
    * but a single synthesized template can be deployed anywhere. */
