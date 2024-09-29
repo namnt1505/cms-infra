@@ -27,8 +27,7 @@ export class DatabaseStack extends BaseStack {
       deletionProtection: false,
       publiclyAccessible: true,
       databaseName: "cms",
-      timezone: "UTC",
-      characterSetName: "UTF8",
+      instanceIdentifier: `cms-db-${this.getSuffix()}`,
     });
   }
 

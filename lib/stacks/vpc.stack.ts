@@ -11,7 +11,7 @@ export class VpcStack extends BaseStack {
 
     this.databaseVpc = new Vpc(this, "DatabaseVpc", {
       availabilityZones: ["us-east-1a"],
-      vpcName: `cms-infra-database-vpc-${this.getSuffix()}`,
+      vpcName: `cms-db-vpc-${this.getSuffix()}`,
       subnetConfiguration: [
         {
           name:`cms-db-vpc-private`,

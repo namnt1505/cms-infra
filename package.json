@@ -9,7 +9,7 @@
     "cdk:synth": "cdk synth --qualifier cmsapp",
     "cdk:diff": "cdk diff --qualifier cmsapp",
     "cdk:deploy": "cdk deploy --qualifier cmsapp",
-    "cdk:destroy": "cdk destroy",
+    "cdk:destroy": "cdk destroy --qualifier cmsapp",
     "build": "tsc",
     "watch": "tsc -w",
     "test": "jest",

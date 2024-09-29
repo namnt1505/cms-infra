@@ -15,11 +15,15 @@ export class SecurityGroupStack extends BaseStack {
   constructor(scope: Construct, id: string, props: SecurityGroupProps) {
     super(scope, id, props);
 
+    this.createDbSecurityGroup(props);
+  }
+
+  private createDbSecurityGroup(props: SecurityGroupProps) {
     this.dbSecurityGroup = new SecurityGroup(this, "DBSecurityGroup", {
       vpc: props.dbVpc,
       description: "Security group for DB",
       allowAllOutbound: true,
-      securityGroupName: `cms-infra-db-sg-${this.getSuffix()}`,
+      securityGroupName: `cms-db-sg-${this.getSuffix()}`,
     });
 
     this.dbSecurityGroup.addIngressRule(

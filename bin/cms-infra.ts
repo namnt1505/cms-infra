@@ -17,5 +17,3 @@ const dbStack = new DatabaseStack(app, 'CmsDB', {
   vpc: vpcStack.getDbVpc(),
   securityGroup: [securityGroupStack.getDbSecurityGroup()],
 });
-
-app.synth();
