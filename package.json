@@ -7,6 +7,7 @@
   "scripts": {
     "cdk:bootstrap": "cdk bootstrap --toolkit-stack-name CmsCdkToolkit --qualifier cmsapp",
     "cdk:synth": "cdk synth --qualifier cmsapp",
+    "cdk:diff": "cdk diff --qualifier cmsapp",
     "cdk:deploy": "cdk deploy --qualifier cmsapp",
     "cdk:destroy": "cdk destroy CmsInfraStack",
     "build": "tsc",
@@ -15,19 +16,20 @@
     "cdk": "cdk"
   },
   "devDependencies": {
-    "@types/jest": "^29.5.12",
+    "@types/jest": "^29.5.13",
     "@types/node": "20.12.7",
-    "aws-cdk": "2.142.1",
+    "aws-cdk": "2.160.0",
     "jest": "^29.7.0",
-    "ts-jest": "^29.2.2",
+    "ts-jest": "^29.2.5",
     "ts-node": "^10.9.2",
     "typescript": "~5.4.5"
   },
   "dependencies": {
-    "aws-cdk-lib": "2.142.1",
+    "aws-cdk-lib": "2.160.0",
     "constructs": "^10.3.0",
     "jsonschema": "^1.4.1",
     "source-map-support": "^0.5.21"
   },
   "packageManager": "pnpm@9.2.0+sha1.886364ebd6dae009284bebc56ed4296bb6dd557a"
 }
+
