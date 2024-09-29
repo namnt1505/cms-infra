@@ -17,7 +17,7 @@ export class SecurityGroupStack extends BaseStack {
 
     this.dbSecurityGroup = new SecurityGroup(this, "DBSecurityGroup", {
       vpc: props.dbVpc,
-      description: "Allow all traffic",
+      description: "Security group for DB",
       allowAllOutbound: true,
       securityGroupName: `cms-infra-db-sg-${this.getSuffix()}`,
     });
@@ -29,7 +29,7 @@ export class SecurityGroupStack extends BaseStack {
       true
     );
 
-    this.dbSecurityGroup.addEgressRule(
+    this.dbSecurityGroup.addIngressRule(
       this.dbSecurityGroup,
       Port.tcp(5432),
       "Allow private inbound traffic to DB",
