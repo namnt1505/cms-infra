@@ -10,7 +10,7 @@ export class VpcStack extends BaseStack {
     super(scope, id, props);
 
     this.databaseVpc = new Vpc(this, "DatabaseVpc", {
-      availabilityZones: ["us-east-1a"],
+      availabilityZones: ["us-east-1a", "us-east-1b"],
       vpcName: `cms-db-vpc-${this.getSuffix()}`,
       subnetConfiguration: [
         {
