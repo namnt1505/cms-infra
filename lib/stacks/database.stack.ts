@@ -15,15 +15,17 @@ export class DatabaseStack extends BaseStack {
 
   constructor(scope: Construct, id: string, props: DatabaseProps) {
     super(scope, id, props);
-  
+
     this.db = new aws_rds.DatabaseInstance(this, "Database", {
       engine: aws_rds.DatabaseInstanceEngine.POSTGRES,
-      instanceType: aws_ec2.InstanceType.of(aws_ec2.InstanceClass.BURSTABLE3, aws_ec2.InstanceSize.MICRO),
+      instanceType: aws_ec2.InstanceType.of(aws_ec2.InstanceClass.BURSTABLE4_GRAVITON, aws_ec2.InstanceSize.MICRO),
       allocatedStorage: 20,
       maxAllocatedStorage: 100,
       vpc: props.vpc,
       securityGroups: props.securityGroup,
-      vpcSubnets: { subnetType: aws_ec2.SubnetType.PRIVATE_WITH_EGRESS },
+      vpcSubnets: {
+        subnets: [...props.vpc.publicSubnets, ...props.vpc.privateSubnets],
+      },
       deletionProtection: false,
       publiclyAccessible: true,
       databaseName: "cms",

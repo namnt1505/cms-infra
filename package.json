@@ -5,7 +5,7 @@
     "cms-infra": "bin/cms-infra.js"
   },
   "scripts": {
-    "cdk:bootstrap": "cdk bootstrap --toolkit-stack-name CmsCdkToolkit --qualifier cmsapp --timeout 300",
+    "cdk:bootstrap": "cdk bootstrap --toolkit-stack-name CmsCdkToolkit --qualifier cmsapp --timeout 600",
     "cdk:synth": "cdk synth --qualifier cmsapp",
     "cdk:diff": "cdk diff --qualifier cmsapp",
     "cdk:deploy": "cdk deploy --qualifier cmsapp",

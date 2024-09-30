@@ -10,18 +10,20 @@ export class VpcStack extends BaseStack {
     super(scope, id, props);
 
     this.databaseVpc = new Vpc(this, "DatabaseVpc", {
-      availabilityZones: ["us-east-1a", "us-east-1b"],
+      availabilityZones: ["ap-southeast-1a", "ap-southeast-1b"],
       vpcName: `cms-db-vpc-${this.getSuffix()}`,
       subnetConfiguration: [
         {
-          name:`cms-db-vpc-private`,
+          name:`cms-db-vpc-private-with-egress`,
           subnetType: SubnetType.PRIVATE_WITH_EGRESS
         },
         {
           name:`cms-db-vpc-public`,
           subnetType: SubnetType.PUBLIC
-        }
-      ]
+        },
+      ],
+      natGateways: 1,
+      createInternetGateway: true,
     });
   }
 

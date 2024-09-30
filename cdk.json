@@ -66,6 +66,7 @@
     "@aws-cdk/aws-kms:reduceCrossAccountRegionPolicyScope": true,
     "@aws-cdk/aws-eks:nodegroupNameAttribute": true,
     "@aws-cdk/aws-ec2:ebsDefaultGp3Volume": true,
+    "@aws-cdk:default-region": "ap-southeast-1",
     "@aws-cdk/core:bootstrapQualifier": "cmsapp"
   }
 }

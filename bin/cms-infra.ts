@@ -5,7 +5,10 @@ import { DatabaseStack } from '../lib/stacks/database.stack';
 import { VpcStack } from '../lib/stacks/vpc.stack';
 import { SecurityGroupStack } from '../lib/stacks/security-group.stack';
 
-const app = new App();
+const app = new App({
+  autoSynth: true,
+  context: {}
+});
 
 const vpcStack = new VpcStack(app, 'CmsVPC', {});
 
