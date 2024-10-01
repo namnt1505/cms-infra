@@ -24,6 +24,8 @@ export class VpcStack extends BaseStack {
       ],
       natGateways: 1,
       createInternetGateway: true,
+      enableDnsHostnames: true,
+      enableDnsSupport: true,
     });
   }
 
