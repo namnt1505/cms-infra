@@ -3,7 +3,8 @@ import 'source-map-support/register';
 import { App } from 'aws-cdk-lib';
 import { DatabaseStack } from '../lib/stacks/database.stack';
 import { VpcStack } from '../lib/stacks/vpc.stack';
-import { SecurityGroupStack } from '../lib/stacks/security-group.stack';
+import { BastionStack } from '../lib/stacks/basion.stack';
+import { Port } from 'aws-cdk-lib/aws-ec2';
 
 const app = new App({
   autoSynth: true,
@@ -12,11 +13,18 @@ const app = new App({
 
 const vpcStack = new VpcStack(app, 'CmsVPC', {});
 
-const securityGroupStack = new SecurityGroupStack(app, 'CmsSG', {
-  dbVpc: vpcStack.getDbVpc(),
+const dbStack = new DatabaseStack(app, 'CmsDB', {
+  vpc: vpcStack.getDbVpc()
 });
 
-const dbStack = new DatabaseStack(app, 'CmsDB', {
-  vpc: vpcStack.getDbVpc(),
-  securityGroup: [securityGroupStack.getDbSecurityGroup()],
+const bastionStack = new BastionStack(app, 'CmsBastion', {
+  vpc: vpcStack.getDbVpc()
 });
+
+dbStack
+  .getDbSecurityGroup()
+  .addIngressRule(
+    bastionStack.getBastionSg(),
+    Port.POSTGRES,
+    'Allow inbound traffic from bastion to DB'
+  );
