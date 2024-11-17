@@ -1,5 +1,5 @@
 import { Construct } from 'constructs';
-import { BaseStack } from '../resources/base/base.stack';
+import { BaseStack } from '../base/base.stack';
 import { StackProps } from 'aws-cdk-lib';
 import {
   IKeyPair,
@@ -19,6 +19,8 @@ import {
 } from 'aws-cdk-lib/aws-ec2';
 import { defaultIAM } from '../configs';
 
+import * as fs from 'fs';
+
 interface BastionStackProps extends StackProps {
   vpc: IVpc;
 }
@@ -28,7 +30,7 @@ interface BastionSgProps extends SecurityGroupProps {}
 interface BastionInstanceProps extends InstanceProps {}
 
 export class BastionStack extends BaseStack {
-  private bastionSg: ISecurityGroup;
+  public bastionSg: ISecurityGroup;
   private bastionInstance: Instance;
   private keyPair: IKeyPair;
 
@@ -87,6 +89,10 @@ export class BastionStack extends BaseStack {
       associatePublicIpAddress: true,
       securityGroup
     });
+
+    this.bastionInstance.addUserData(
+      fs.readFileSync('lib/scripts/user_script.sh', 'utf8')
+    );
   }
 
   public getBastion(): Instance {

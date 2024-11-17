@@ -1,15 +1,20 @@
-import { StackProps } from 'aws-cdk-lib';
+import { CfnOutput, StackProps } from 'aws-cdk-lib';
 import { IVpc, SubnetType, Vpc } from 'aws-cdk-lib/aws-ec2';
 import { Construct } from 'constructs';
-import { BaseStack } from '../resources/base/base.stack';
+import { BaseStack } from '../base/base.stack';
 
 export class VpcStack extends BaseStack {
-  private databaseVpc: IVpc;
+  public dbVpc: IVpc;
+  public appVpc: IVpc;
 
   constructor(scope: Construct, id: string, props: StackProps) {
     super(scope, id, props);
 
-    this.databaseVpc = new Vpc(this, 'DatabaseVpc', {
+    this.createDbVpc();
+  }
+
+  private createDbVpc() {
+    this.dbVpc = new Vpc(this, 'DatabaseVpc', {
       availabilityZones: ['ap-southeast-1a', 'ap-southeast-1b'],
       vpcName: `cms-db-vpc-${this.getSuffix()}`,
       subnetConfiguration: [
@@ -27,9 +32,5 @@ export class VpcStack extends BaseStack {
       enableDnsHostnames: true,
       enableDnsSupport: true
     });
-  }
-
-  public getDbVpc(): IVpc {
-    return this.databaseVpc;
   }
 }

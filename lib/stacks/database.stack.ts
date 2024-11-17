@@ -1,6 +1,6 @@
-import { aws_ec2, aws_rds, StackProps } from 'aws-cdk-lib';
+import { aws_ec2, aws_rds, Fn, StackProps } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
-import { BaseStack } from '../resources/base/base.stack';
+import { BaseStack } from '../base/base.stack';
 import { ISecurityGroup, Peer, Port, SecurityGroup } from 'aws-cdk-lib/aws-ec2';
 import { IVpc } from 'aws-cdk-lib/aws-ec2';
 
@@ -9,14 +9,15 @@ interface DatabaseProps extends StackProps {
 }
 
 export class DatabaseStack extends BaseStack {
-  private db: aws_rds.DatabaseInstance;
+  public db: aws_rds.DatabaseInstance;
 
-  private dbSecurityGroup: SecurityGroup;
+  public dbSecurityGroup: SecurityGroup;
 
   constructor(scope: Construct, id: string, props: DatabaseProps) {
     super(scope, id, props);
 
     const { vpc } = props;
+
     this.createDbSecurityGroup(vpc);
     this.createDbInstance(vpc, [this.dbSecurityGroup]);
   }
@@ -50,13 +51,6 @@ export class DatabaseStack extends BaseStack {
     });
 
     this.dbSecurityGroup.addIngressRule(
-      Peer.anyIpv4(),
-      Port.tcp(5432),
-      'Allow public inbound traffic to DB',
-      true
-    );
-
-    this.dbSecurityGroup.addIngressRule(
       this.dbSecurityGroup,
       Port.tcp(5432),
       'Allow private inbound traffic to DB',
@@ -64,11 +58,11 @@ export class DatabaseStack extends BaseStack {
     );
   }
 
-  public getDbInstance() {
-    return this.db;
-  }
-
-  public getDbSecurityGroup(): SecurityGroup {
-    return this.dbSecurityGroup;
+  public addIngressRule(
+    securityGroup: ISecurityGroup,
+    port: Port,
+    description: string
+  ) {
+    this.dbSecurityGroup.addIngressRule(securityGroup, port, description);
   }
 }

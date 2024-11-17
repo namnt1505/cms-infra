@@ -10,28 +10,28 @@
     "cdk:diff": "cdk diff --qualifier cmsapp",
     "cdk:deploy": "cdk deploy --qualifier cmsapp",
     "cdk:destroy": "cdk destroy --qualifier cmsapp",
-    "build": "tsc",
-    "watch": "tsc -w",
-    "test": "jest",
-    "cdk": "cdk"
+    "test:sniper": "npx ts-node lib/lambda/cryptSniperBot/index.ts"
   },
   "devDependencies": {
     "@types/jest": "^29.5.13",
     "@types/node": "20.12.7",
     "aws-cdk": "2.160.0",
-    "jest": "^29.7.0",
-    "ts-jest": "^29.2.5",
-    "ts-node": "^10.9.2",
-    "typescript": "~5.4.5",
+    "dotenv": "^16.4.5",
     "eslint": "^9.11.1",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-prettier": "^5.0.0",
+    "jest": "^29.7.0",
     "prettier": "^3.3.2",
-    "prettier-eslint": "^16.3.0"
+    "prettier-eslint": "^16.3.0",
+    "ts-jest": "^29.2.5",
+    "ts-node": "^10.9.2",
+    "typescript": "~5.4.5"
   },
   "dependencies": {
     "aws-cdk-lib": "2.160.0",
+    "axios": "^1.7.7",
     "constructs": "^10.3.0",
+    "fs-extra": "^11.2.0",
     "jsonschema": "^1.4.1",
     "source-map-support": "^0.5.21"
   },
