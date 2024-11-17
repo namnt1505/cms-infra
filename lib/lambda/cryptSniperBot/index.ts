@@ -1,20 +1,8 @@
 import { Handler } from 'aws-cdk-lib/aws-lambda';
 import axios from 'axios';
-import { buyOrSell, formatNumber, toCandlestick, volumeChange } from './helper'
-import { Candlestick } from './type';
+import { buyOrSell, escapeMessage, messageTemplate, toCandlestick, volumeChange } from './helper'
+import { Candlestick, KLineResponse, TradingChange } from './type';
 
-
-
-interface KLineResponse {
-  data: any[];
-}
-
-interface TradingChange {
-  volume: number;
-  changePercent: string;
-  marketWinOperate: string;
-  closePrice: number;
-}
 
 async function getTradingChanges(symbol: string, interval: string): Promise<TradingChange | null> {
   try {
@@ -51,25 +39,25 @@ export const handler: Handler = async () => {
   const symbols = ['DYDXUSDT', 'BTCUSDT'];
   let message = "Trading volume in 15m:\n";
 
-  for (const symbol of symbols) {
+  const promise = symbols.map(async (symbol) => {
     const marketStatus = await getTradingChanges(symbol, '15m');
 
     if (marketStatus !== null) {
-      const { volume, changePercent, marketWinOperate, closePrice } = marketStatus;
-      console.log(`${symbol}: ${volume} USDT (${marketWinOperate} ${changePercent})`);
-      const formattedVolumes = formatNumber(volume);
-      const formattedClosePrice = formatNumber(closePrice);
-
-      message += `- ${symbol}: Vol ${formattedVolumes} USDT (${marketWinOperate} ${changePercent}), Closed at: ${formattedClosePrice} USDT \n`;
+      const subMessage = messageTemplate(symbol, marketStatus);
+      message += `${subMessage} \n`;
     }
-  }
+    return;
+  });
+
+  await Promise.all(promise);
 
   const url = `https://api.telegram.org/bot${telegramBotToken}/sendMessage`;
 
   try {
     await axios.post(url, {
       chat_id: chatId,
-      text: message,
+      text: escapeMessage(message),
+      parse_mode: 'MarkdownV2',
     });
     console.log("Message sent successfully");
   } catch (error) {

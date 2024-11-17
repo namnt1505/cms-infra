@@ -13,3 +13,14 @@ export interface Candlestick {
   takerBuyBaseAssetVolume: number;
   takerBuyQuoteAssetVolume: number;
 }
+
+export interface KLineResponse {
+  data: any[];
+}
+
+export interface TradingChange {
+  volume: number;
+  changePercent: string;
+  marketWinOperate: string;
+  closePrice: number;
+}

@@ -1,4 +1,4 @@
-import { Candlestick, MarketOperate } from './type';
+import { Candlestick, MarketOperate, TradingChange } from './type';
 
 export const buyOrSell = (candlestick: Candlestick): MarketOperate => {
   const { open, close } = candlestick;
@@ -34,4 +34,27 @@ export const formatNumber = (number: number): string => {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   }).format(number);
+}
+
+
+export const getResistances = (candlesticks: Candlestick[]): number[] => {
+  const resistances = candlesticks.map((candlestick) => candlestick.high);
+  return resistances;
+}
+
+export function escapeMessage(text: string): string {
+  return text.replace(/([_[\]()~`<>#+\-=|{}.!\/\\])/g, '\\$1');
+}
+
+
+export const messageTemplate = (symbol: string, marketStatus: TradingChange): string => {
+  const { volume, changePercent, marketWinOperate, closePrice } = marketStatus;
+  const formattedVolumes = formatNumber(volume);
+  const formattedClosePrice = formatNumber(closePrice);
+
+  let message = `● *${symbol}:* \n`;
+  message += `  - Vol   : ${formattedVolumes} USDT (${marketWinOperate} ${changePercent}) \n`;
+  message += `  - Closed: ${formattedClosePrice} USDT \n`;
+
+  return message;
 }
