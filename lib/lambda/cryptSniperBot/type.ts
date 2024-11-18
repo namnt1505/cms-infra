@@ -1,6 +1,6 @@
 export type MarketOperate = 'BUY' | 'SELL';
 
-export interface Candlestick {
+export interface CandleStick {
   openTime: number;
   open: number;
   high: number;
@@ -23,4 +23,6 @@ export interface TradingChange {
   changePercent: string;
   marketWinOperate: string;
   closePrice: number;
+  nearestResistances: number[];
+  nearestSupports: number[];
 }

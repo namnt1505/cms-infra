@@ -1,14 +1,18 @@
-import { Candlestick, MarketOperate, TradingChange } from './type';
+import { CandleStick, MarketOperate } from './type';
 
-export const buyOrSell = (candlestick: Candlestick): MarketOperate => {
-  const { open, close } = candlestick;
+export const buyOrSell = (CandleStick: CandleStick): MarketOperate => {
+  const { open, close } = CandleStick;
+  console.log({
+    open,
+    close,
+  });
   if (open < close) {
     return 'BUY';
   }
   return 'SELL';
 };
 
-export const toCandlestick = (kline: any[]): Candlestick => ({
+export const toCandleStick = (kline: any[]): CandleStick => ({
   openTime: kline[0],
   open: kline[1],
   high: kline[2],
@@ -22,7 +26,7 @@ export const toCandlestick = (kline: any[]): Candlestick => ({
   takerBuyQuoteAssetVolume: kline[10],
 });
 
-export const volumeChange = (currentStick: Candlestick, lastStick: Candlestick): string => {
+export const volumeChange = (currentStick: CandleStick, lastStick: CandleStick): string => {
   const change = Math.abs((currentStick.quoteAssetVolume - lastStick.quoteAssetVolume) / lastStick.quoteAssetVolume) * 100;
   const sign = currentStick.quoteAssetVolume - lastStick.quoteAssetVolume ? '+' : '-';
   return `${sign}${Math.abs(change).toFixed(2)}%`;
@@ -31,30 +35,22 @@ export const volumeChange = (currentStick: Candlestick, lastStick: Candlestick):
 export const formatNumber = (number: number): string => {
   return new Intl.NumberFormat('en-US', {
     style: 'decimal',
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
+    minimumFractionDigits: 4,
+    maximumFractionDigits: 4,
   }).format(number);
-}
-
-
-export const getResistances = (candlesticks: Candlestick[]): number[] => {
-  const resistances = candlesticks.map((candlestick) => candlestick.high);
-  return resistances;
 }
 
 export function escapeMessage(text: string): string {
   return text.replace(/([_[\]()~`<>#+\-=|{}.!\/\\])/g, '\\$1');
 }
 
+export const getLatestCandleSticks = (candleSticks: CandleStick[]) => {
+  const latestSticks = candleSticks.slice(-3);
 
-export const messageTemplate = (symbol: string, marketStatus: TradingChange): string => {
-  const { volume, changePercent, marketWinOperate, closePrice } = marketStatus;
-  const formattedVolumes = formatNumber(volume);
-  const formattedClosePrice = formatNumber(closePrice);
+  return {
+    last2CandleSticks: latestSticks[0],
+    lastCandleSticks: latestSticks[1],
+    currentSticks: latestSticks[2],
+  };
 
-  let message = `● *${symbol}:* \n`;
-  message += `  - Vol   : ${formattedVolumes} USDT (${marketWinOperate} ${changePercent}) \n`;
-  message += `  - Closed: ${formattedClosePrice} USDT \n`;
-
-  return message;
 }

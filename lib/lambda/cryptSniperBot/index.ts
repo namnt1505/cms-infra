@@ -1,7 +1,9 @@
 import { Handler } from 'aws-cdk-lib/aws-lambda';
 import axios from 'axios';
-import { buyOrSell, escapeMessage, messageTemplate, toCandlestick, volumeChange } from './helper'
-import { Candlestick, KLineResponse, TradingChange } from './type';
+import { buyOrSell, escapeMessage, getLatestCandleSticks, toCandleStick, volumeChange } from './helper'
+import { CandleStick, KLineResponse, TradingChange } from './type';
+import { findNearestResistances, findNearestSupports } from './indicator';
+import { messageTemplate } from './template';
 
 
 async function getTradingChanges(symbol: string, interval: string): Promise<TradingChange | null> {
@@ -10,22 +12,23 @@ async function getTradingChanges(symbol: string, interval: string): Promise<Trad
       params: {
         symbol: symbol,
         interval: interval,
-        limit: 3,
+        limit: 50,
       },
     });
 
-    const candlesticks: Candlestick[] = response.data.map((kline) => (toCandlestick(kline)));
+    const candleSticks: CandleStick[] = response.data.map((kline) => (toCandleStick(kline)));
 
 
-    const lastCandleSticks = candlesticks[1];
-    const last2CandleSticks = candlesticks[0];
+    const { last2CandleSticks, lastCandleSticks } = getLatestCandleSticks(candleSticks);
 
     const volume = lastCandleSticks.quoteAssetVolume;
     const changePercent = volumeChange(lastCandleSticks, last2CandleSticks);
-    const marketWinOperate = buyOrSell(candlesticks[1]);
+    const marketWinOperate = buyOrSell(lastCandleSticks);
     const closePrice = lastCandleSticks.close;
+    const nearestResistances = findNearestResistances(candleSticks);
+    const nearestSupports = findNearestSupports(candleSticks);
 
-    return { volume, changePercent, marketWinOperate, closePrice };
+    return { volume, changePercent, marketWinOperate, closePrice, nearestResistances, nearestSupports };
   } catch (error) {
     console.error(error);
     return null;
@@ -36,11 +39,11 @@ export const handler: Handler = async () => {
   const telegramBotToken = process.env.TELEGRAM_CRYPT_SNIPER_BOT_TOKEN;
   const chatId = process.env.TELEGRAM_CRYPT_CHAT_GROUP_ID;
 
-  const symbols = ['DYDXUSDT', 'BTCUSDT'];
-  let message = "Trading volume in 15m:\n";
+  const symbols = ['DYDXUSDT'];
+  let message = "Trading volume in 30m:\n";
 
   const promise = symbols.map(async (symbol) => {
-    const marketStatus = await getTradingChanges(symbol, '15m');
+    const marketStatus = await getTradingChanges(symbol, '30m');
 
     if (marketStatus !== null) {
       const subMessage = messageTemplate(symbol, marketStatus);

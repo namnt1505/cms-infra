@@ -28,7 +28,7 @@ export class CryptSniperBotStack extends cdk.Stack {
     });
 
     const rule = new events.Rule(this, 'CryptSniperBotScheduleRule', {
-      schedule: events.Schedule.cron({ minute: '0/15', hour: '*' }),
+      schedule: events.Schedule.cron({ minute: '0/30', hour: '*' }),
       ruleName: 'CryptSniperBotScheduleRule',
     });
 
