@@ -6,6 +6,7 @@ import { VpcStack } from '../lib/stacks/vpc.stack';
 import { BastionStack } from '../lib/stacks/basion.stack';
 import { Port } from 'aws-cdk-lib/aws-ec2';
 import { CryptSniperBotStack } from '../lib/stacks/crypt-sniper-bot.stack';
+import { BatchJobStack } from '../lib/stacks/security-batch.stack';
 
 const app = new App({
   autoSynth: true,
@@ -29,5 +30,9 @@ dbStack.addIngressRule(
 );
 
 const cryptSniperBot = new CryptSniperBotStack(app, 'CryptSniperBot');
+
+const batchJobStack = new BatchJobStack(app, 'BatchJobStack', {
+  vpc: vpcStack.appVpc
+});
 
 app.synth();
