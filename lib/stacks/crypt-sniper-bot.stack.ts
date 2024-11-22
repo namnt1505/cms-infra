@@ -4,11 +4,8 @@ import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 
 import * as events from 'aws-cdk-lib/aws-events';
 import * as targets from 'aws-cdk-lib/aws-events-targets';
-import * as dotenv from 'dotenv';
-import { envConfig } from '../const/envConfig';
+import { envConfig } from '../env/envConfig';
 import { Runtime } from 'aws-cdk-lib/aws-lambda';
-
-dotenv.config();
 
 export class CryptSniperBotStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -17,19 +14,23 @@ export class CryptSniperBotStack extends cdk.Stack {
     const telegramBotToken = envConfig.TELEGRAM_CRYPT_SNIPER_BOT_TOKEN;
     const telegramChatId = envConfig.TELEGRAM_CRYPT_CHAT_GROUP_ID;
 
-    const sendMessageFunction = new NodejsFunction(this, 'SendMessageFunction', {
-      runtime: Runtime.NODEJS_18_X,
-      functionName: 'CryptSniperBotSendMessageFunction',
-      environment: {
-        TELEGRAM_CRYPT_SNIPER_BOT_TOKEN: telegramBotToken,
-        TELEGRAM_CRYPT_CHAT_GROUP_ID: telegramChatId,
-      },
-      entry: 'lib/lambda/cryptSniperBot/index.ts',
-    });
+    const sendMessageFunction = new NodejsFunction(
+      this,
+      'SendMessageFunction',
+      {
+        runtime: Runtime.NODEJS_18_X,
+        functionName: 'CryptSniperBotSendMessageFunction',
+        environment: {
+          TELEGRAM_CRYPT_SNIPER_BOT_TOKEN: telegramBotToken,
+          TELEGRAM_CRYPT_CHAT_GROUP_ID: telegramChatId
+        },
+        entry: 'lib/lambda/cryptSniperBot/index.ts'
+      }
+    );
 
     const rule = new events.Rule(this, 'CryptSniperBotScheduleRule', {
-      schedule: events.Schedule.cron({ minute: '0/30', hour: '*' }),
-      ruleName: 'CryptSniperBotScheduleRule',
+      schedule: events.Schedule.cron({ minute: '0', hour: '*' }),
+      ruleName: 'CryptSniperBotScheduleRule'
     });
 
     rule.addTarget(new targets.LambdaFunction(sendMessageFunction));

@@ -47,3 +47,10 @@ export function findNearestSupports(candleSticks: CandleStick[]): number[] {
 
   return supports;
 }
+
+export function getMovingAverage(candleSticks: CandleStick[], period: number): number {
+  if (candleSticks.length < period) return 0;
+
+  const sum = candleSticks.slice(-period).reduce((acc, candleStick) => acc + candleStick.close, 0);
+  return sum / period;
+}

@@ -5,12 +5,16 @@
     "cms-infra": "bin/cms-infra.js"
   },
   "scripts": {
-    "cdk:bootstrap": "cdk bootstrap --toolkit-stack-name CmsCdkToolkit --qualifier cmsapp --timeout 600",
-    "cdk:synth": "cdk synth --qualifier cmsapp",
-    "cdk:diff": "cdk diff --qualifier cmsapp",
-    "cdk:deploy": "cdk deploy --qualifier cmsapp",
-    "cdk:destroy": "cdk destroy --qualifier cmsapp",
-    "test:sniper": "npx ts-node lib/lambda/cryptSniperBot/index.ts"
+    "cms:bootstrap": "cdk bootstrap --toolkit-stack-name CmsCdkToolkit --qualifier cmsapp --timeout 600",
+    "cms:synth": "cdk synth --qualifier cmsapp",
+    "cms:diff": "cdk diff --qualifier cmsapp",
+    "cms:deploy": "cdk deploy --qualifier cmsapp",
+    "cms:destroy": "cdk destroy --qualifier cmsapp",
+    "sniper:bootstrap": "cdk bootstrap --toolkit-stack-name SniperToolkit --qualifier sniper-bot --timeout 600",
+    "sniper:synth": "cdk synth --qualifier sniper-bot",
+    "sniper:diff": "cdk synth --qualifier sniper-bot",
+    "sniper:deploy": "cdk deploy --qualifier sniper-bot",
+    "sniper:destroy": "cdk destroy --qualifier sniper-bot"
   },
   "devDependencies": {
     "@types/jest": "^29.5.13",

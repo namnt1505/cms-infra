@@ -25,4 +25,9 @@ export interface TradingChange {
   closePrice: number;
   nearestResistances: number[];
   nearestSupports: number[];
+  analyticResult: AnalyticResult;
+}
+
+export interface AnalyticResult {
+  commentsAboutPriceAndMA: string[];
 }

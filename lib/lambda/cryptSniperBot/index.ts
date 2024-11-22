@@ -1,25 +1,39 @@
 import { Handler } from 'aws-cdk-lib/aws-lambda';
 import axios from 'axios';
-import { buyOrSell, escapeMessage, getLatestCandleSticks, toCandleStick, volumeChange } from './helper'
+import {
+  buyOrSell,
+  escapeMessage,
+  getLatestCandleSticks,
+  toCandleStick,
+  volumeChange
+} from './helper';
 import { CandleStick, KLineResponse, TradingChange } from './type';
 import { findNearestResistances, findNearestSupports } from './indicator';
-import { messageTemplate } from './template';
+import { report } from './report';
+import { analyticMovingAverageAndPrice } from './analytic';
 
-
-async function getTradingChanges(symbol: string, interval: string): Promise<TradingChange | null> {
+async function getTradingChance(
+  symbol: string,
+  interval: string
+): Promise<TradingChange | null> {
   try {
-    const response: KLineResponse = await axios.get(`https://api.binance.com/api/v3/klines`, {
-      params: {
-        symbol: symbol,
-        interval: interval,
-        limit: 50,
-      },
-    });
+    const response: KLineResponse = await axios.get(
+      `https://api.binance.com/api/v3/klines`,
+      {
+        params: {
+          symbol: symbol,
+          interval: interval,
+          limit: 50
+        }
+      }
+    );
 
-    const candleSticks: CandleStick[] = response.data.map((kline) => (toCandleStick(kline)));
+    const candleSticks: CandleStick[] = response.data.map((kline) =>
+      toCandleStick(kline)
+    );
 
-
-    const { last2CandleSticks, lastCandleSticks } = getLatestCandleSticks(candleSticks);
+    const { last2CandleSticks, lastCandleSticks } =
+      getLatestCandleSticks(candleSticks);
 
     const volume = lastCandleSticks.quoteAssetVolume;
     const changePercent = volumeChange(lastCandleSticks, last2CandleSticks);
@@ -28,7 +42,23 @@ async function getTradingChanges(symbol: string, interval: string): Promise<Trad
     const nearestResistances = findNearestResistances(candleSticks);
     const nearestSupports = findNearestSupports(candleSticks);
 
-    return { volume, changePercent, marketWinOperate, closePrice, nearestResistances, nearestSupports };
+    const analyticResult = {
+      commentsAboutPriceAndMA: [
+        analyticMovingAverageAndPrice(candleSticks, 7),
+        analyticMovingAverageAndPrice(candleSticks, 25),
+        analyticMovingAverageAndPrice(candleSticks, 99)
+      ]
+    };
+
+    return {
+      volume,
+      changePercent,
+      marketWinOperate,
+      closePrice,
+      nearestResistances,
+      nearestSupports,
+      analyticResult
+    };
   } catch (error) {
     console.error(error);
     return null;
@@ -40,13 +70,13 @@ export const handler: Handler = async () => {
   const chatId = process.env.TELEGRAM_CRYPT_CHAT_GROUP_ID;
 
   const symbols = ['DYDXUSDT'];
-  let message = "Trading volume in 30m:\n";
+  let message = 'Trading volume in 30m:\n';
 
   const promise = symbols.map(async (symbol) => {
-    const marketStatus = await getTradingChanges(symbol, '30m');
+    const marketStatus = await getTradingChance(symbol, '30m');
 
     if (marketStatus !== null) {
-      const subMessage = messageTemplate(symbol, marketStatus);
+      const subMessage = report(symbol, marketStatus);
       message += `${subMessage} \n`;
     }
     return;
@@ -60,10 +90,10 @@ export const handler: Handler = async () => {
     await axios.post(url, {
       chat_id: chatId,
       text: escapeMessage(message),
-      parse_mode: 'MarkdownV2',
+      parse_mode: 'MarkdownV2'
     });
-    console.log("Message sent successfully");
+    console.log('Message sent successfully');
   } catch (error) {
-    console.error("Error sending message", error);
+    console.error('Error sending message', error);
   }
 };

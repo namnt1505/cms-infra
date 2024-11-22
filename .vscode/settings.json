@@ -8,5 +8,8 @@
   "vs-code-prettier-eslint.prettierLast": false,
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   }
 }
