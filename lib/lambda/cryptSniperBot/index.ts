@@ -23,7 +23,7 @@ async function getTradingChance(
         params: {
           symbol: symbol,
           interval: interval,
-          limit: 50
+          limit: 500
         }
       }
     );
@@ -70,10 +70,10 @@ export const handler: Handler = async () => {
   const chatId = process.env.TELEGRAM_CRYPT_CHAT_GROUP_ID;
 
   const symbols = ['DYDXUSDT'];
-  let message = 'Trading volume in 30m:\n';
+  let message = 'Trading volume in 1h:\n';
 
   const promise = symbols.map(async (symbol) => {
-    const marketStatus = await getTradingChance(symbol, '30m');
+    const marketStatus = await getTradingChance(symbol, '1h');
 
     if (marketStatus !== null) {
       const subMessage = report(symbol, marketStatus);
