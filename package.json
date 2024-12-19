@@ -11,10 +11,15 @@
     "cms:deploy": "cdk deploy --qualifier cmsapp",
     "cms:destroy": "cdk destroy --qualifier cmsapp",
     "sniper:bootstrap": "cdk bootstrap --toolkit-stack-name SniperToolkit --qualifier sniper-bot --timeout 600",
-    "sniper:synth": "cdk synth --qualifier sniper-bot",
-    "sniper:diff": "cdk synth --qualifier sniper-bot",
-    "sniper:deploy": "cdk deploy --qualifier sniper-bot",
-    "sniper:destroy": "cdk destroy --qualifier sniper-bot"
+    "sniper:synth": "TARGET=sniper-bot cdk synth --qualifier sniper-bot",
+    "sniper:diff": "TARGET=sniper-bot cdk synth --qualifier sniper-bot",
+    "sniper:deploy": "TARGET=sniper-bot cdk deploy --qualifier sniper-bot",
+    "sniper:destroy": "TARGET=sniper-bot cdk destroy --qualifier sniper-bot",
+    "msq:bootstrap": "cdk bootstrap --toolkit-stack-name MsqToolkit --qualifier ms-queue --timeout 600",
+    "msq:synth": "TARGET=msq cdk synth --qualifier ms-queue",
+    "msq:diff": "TARGET=msq cdk synth --qualifier ms-queue",
+    "msq:deploy": "TARGET=msq cdk deploy --qualifier ms-queue",
+    "msq:destroy": "TARGET=msq cdk destroy --qualifier ms-queue"
   },
   "devDependencies": {
     "@types/jest": "^29.5.13",
